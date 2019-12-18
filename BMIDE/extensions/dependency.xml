@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<TcBusinessDataIncludes currentTemplateVersion="11.2_4" displayName="TDPS_ph1" enableOpsDataDeploy="false" guid="22858E3F946F5E2796775F3A2C9F2DFD" isDescriptionMandatory="false" name="tdpsph1" optional="true" prefixes="TDP2" teamcenterTemplate="false">
+    <include file="foundation_template.xml"/>
+</TcBusinessDataIncludes>

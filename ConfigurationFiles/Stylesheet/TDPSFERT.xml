@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+===============================================================================
+                Copyright (c) 2003-2005 UGS Corporation
+                   Unpublished - All Rights Reserved
+===============================================================================
+
+    Filename: TDPSFERT.xml
+
+    Default style sheet for displaying TDPSFERT Rev Master form poperties.
+ -->
+
+<rendering>
+  <page title="General" titleKey="General">
+    <property name="tdps_mw"/>
+    <property name="tdps_frame"/>
+    <property name="tdps_kv"/>
+    <property name="tdps_frequency_hz"/>
+    <property name="tdps_speed_rpm"/>
+    <property name="tdps_unit_of_measure"/>
+    <property name="tdps_item_cat_code"/>
+    <property name="tdps_prod_grp_code"/>
+    <property name="tdps_core_length" />
+    <property name="tdp2_exc_core_len"/>
+    <property name="tdp2_design_category"/>
+    <conditions>
+        
+        <GoverningProperty propertyname = "tdps_unit_of_measure" propertyvalue = "">       
+                <Rule propertyname = "tdps_unit_of_measure" state = "required"/>
+        </GoverningProperty>
+        
+        <GoverningProperty propertyname = "tdps_item_cat_code" propertyvalue = "">       
+                <Rule propertyname = "tdps_item_cat_code" state = "required"/>
+        </GoverningProperty>
+        
+        <GoverningProperty propertyname = "tdps_prod_grp_code" propertyvalue = "">       
+                <Rule propertyname = "tdps_prod_grp_code" state = "required"/>
+        </GoverningProperty>
+    </conditions>
+
+  </page>
+</rendering>

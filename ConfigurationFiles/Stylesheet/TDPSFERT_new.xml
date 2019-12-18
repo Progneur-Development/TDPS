@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+===============================================================================
+                Copyright (c) 2003-2005 UGS Corporation
+                   Unpublished - All Rights Reserved
+===============================================================================
+
+    Filename: TDPSFERT.xml
+
+    Default style sheet for displaying TDPSFERT Rev Master form poperties.
+ -->
+
+<rendering>
+  <page title="General" titleKey="General">
+    <property name="tdps_mw"/>
+    <property name="tdps_frame"/>
+    <property name="tdps_kv"/>
+    <property name="tdps_frequency_hz"/>
+    <property name="tdps_speed_rpm"/>
+    <property name="tdps_unit_of_measure"/>
+    <property name="tdps_item_cat_code"/>
+    <property name="tdps_prod_grp_code"/>
+    <property name="tdps_core_length" />
+    <property name="tdp2_exc_core_len"/>
+    <property name="tdp2_design_category"/>
+	<property name="tdp2_rotor_construction"/>
+	<property name="tdp2_fantype"/>
+	<property name="tdp2_coolertype"/>
+	<property name="tdp2_cooler_water_outlet_tm"/>
+	<property name="tdp2_cooler_wtr_vol"/>
+	<property name="tdp2_brng_Lube_oil_qty_de"/>
+	<property name="tdp2_brng_lube_oil_qty_nde"/>
+	<property name="tdp2_Lube_oil_inlet_temp"/>
+	<property name="tdp2_Grade_of_oil"/>
+	<property name="tdp2_Xd_Design"/>
+	<property name="tdp2_eff_at_100_at_rated_pf"/>
+	<property name="tdp2_flywheel_gd2_tm"/>
+	<property name="tdp2_rotor_gd2_wo_flywheel"/>
+	<property name="tdp2_type_of_shaft_mounting"/>
+	<property name="tdp2_num_of_stator_slots"/>
+	<property name="tdp2_grss_net_rotor_slots"/>
+	<property name="tdp2_totl_cooler_los_capcty"/>
+	<property name="tdp2_nde_bearing_size"/>
+	<property name="tdp2_de_bearing_sizes"/>
+	<property name="tdp2_nde_bearing_loss_kw"/>
+	<property name="tdp2_de_bearing_loss_kw"/>
+	<property name="tdp2_apx_wt_of_complt_mc"/>
+	<property name="tdp2_cld_air_to_gen_frm_clr"/>
+	<property name="tdp2_cooling_circuits"/>
+	<property name="tdp2_coller_cld_to_hot"/>
+	<property name="tdp2_shrt_trm_trnsient_rnwy"/>
+    <conditions>
+        
+        <GoverningProperty propertyname = "tdps_unit_of_measure" propertyvalue = "">       
+                <Rule propertyname = "tdps_unit_of_measure" state = "required"/>
+        </GoverningProperty>
+        
+        <GoverningProperty propertyname = "tdps_item_cat_code" propertyvalue = "">       
+                <Rule propertyname = "tdps_item_cat_code" state = "required"/>
+        </GoverningProperty>
+        
+        <GoverningProperty propertyname = "tdps_prod_grp_code" propertyvalue = "">       
+                <Rule propertyname = "tdps_prod_grp_code" state = "required"/>
+        </GoverningProperty>
+    </conditions>
+
+  </page>
+</rendering>
