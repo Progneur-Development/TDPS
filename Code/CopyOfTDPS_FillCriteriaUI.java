@@ -1,9 +1,8 @@
 /****************************************************************
  @copyright Progneur Technology
- File Name		: TDPS_FillCriteriaUI
- Functionality 	: This file takes the input criteria for SO search
- Author			: Bhavana Patil
- Created on		: 13-09-2019	
+ File Name : TDPS_FillCriteriaUI
+ Functionality : This file takes the input criteria for SO search
+ Author : Bhavana Patil
  ******************************************************************/
 
 package com.teamcenter.tdps.view;
@@ -37,58 +36,47 @@ import com.teamcenter.tdps.view.TC_Data_Operations;
 
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.wb.swt.SWTResourceManager;
-	public class TDPS_FillCriteriaUI {
-
-	
+	public class CopyOfTDPS_FillCriteriaUI {
+	protected static TableColumn TableColumn_ExportProperties = null;
+	private Button btnNext;
 	TCSession session;
-	private Shell shell_tdps_criteria 		= null;
-	private Button btnCancel 		  		= null;
-	private Button btnNext 					= null;
-	private Button btnCheckButton 			= null;
-	private DateTime dateTime_fromDate 		= null;
-	private DateTime dateTime_ToDate 		= null;
-	private DateTime dateTime_fromTime 		= null;
-	private DateTime dateTime_toTime 		= null;
-	private Composite composite_date 		= null;
-	private Label lbSoNumberTo 				= null;
-	private Text text_SoNumberTo 			= null;
-	private Text text_SoNumberFrom 			= null;
-	private Text text_soTo 					= null;
-	private Text text_sofrom 				= null;
-	private ArrayList<Object> tableStorage 	= null;
-	private TC_Data_Operations tCDataOperationsObj = null;
-	protected TableColumn tableColumn_ExportProperties = null;
+	private Text text_SoNumberFrom;
+	private Shell shell_tdps_criteria;
+	private Button btnCancel;
+	private TC_Data_Operations obj;
+	private DateTime dateTime_fromDate;
+	private DateTime dateTime_ToDate;
+	private DateTime dateTime_fromTime;
+	private DateTime dateTime_toTime;
+	private Composite composite_date;
+	private Button btnCheckButton;
+	private Label lbSoNumberTo;
+	private Text text_SoNumberTo;
+	private ArrayList<Object> tableStorage;
 	
-	
-	
-	public TDPS_FillCriteriaUI(TCSession session) {
+	public CopyOfTDPS_FillCriteriaUI(TCSession session) {
 		this.session=session;
-		tCDataOperationsObj=new TC_Data_Operations(session); 
+		obj=new TC_Data_Operations(session); 
 		
 	}
-	/****************************************************************
-	Function Name	:   fillCriteriaDialog name
-	Author			:	Bhavana Patil
-	Created on		:	13/09/2019
-	Description		:	Dialog for Fill criteria UI.
-	Inputs			:	initially inputs are null
-						 * @param dateChkBoxITtrue 
-						 * @param tableStorage 
-						 * @param inputCriteriaList 
-						 * @wbp.parser.entryPoint
-	Outputs			:	Display UI
-	****************************************************************/
-
+	/**
+	 * @param dateChkBoxITtrue 
+	 * @param tableStorage 
+	 * @param inputCriteriaList 
+	 * @wbp.parser.entryPoint
+	 */
 public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaList, boolean dateChkBoxITtrue, ArrayList<Object> tableStorage) 
    {
 	    //Display display = new Display();
 	    this.tableStorage=tableStorage;
 	    shell_tdps_criteria = new Shell();
+	   // shell_tdps_criteria.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 	    shell_tdps_criteria.setText("TDPS Report: Fill Criteria");
 	    shell_tdps_criteria.setSize(498, 313);
 	    shell_tdps_criteria.setLayout(new GridLayout(1, false));
 	    	    
 	    Composite composite_main = new Composite(shell_tdps_criteria, SWT.NONE);
+	    //composite_main.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 	    composite_main.setToolTipText("Fill Criteria");
 	    composite_main.setLayout(new GridLayout(1, false));
 	    GridData gd_composite_main = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
@@ -96,6 +84,7 @@ public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaLis
 	    composite_main.setLayoutData(gd_composite_main);
 	    
 	    final Composite composite_selectedType = new Composite(composite_main, SWT.BORDER);
+	    //composite_selectedType.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 	    GridLayout gl_composite_selectedType = new GridLayout(3, false);
 	    gl_composite_selectedType.verticalSpacing = 8;
 	    gl_composite_selectedType.marginTop = 15;
@@ -109,6 +98,7 @@ public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaLis
 	    composite_selectedType.setLayoutData(gd_composite_selectedType);
 	    
 	    Label lblSoNumber = new Label(composite_selectedType, SWT.HORIZONTAL);
+	    //lblSoNumber.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 	    GridData gd_lblSoNumber = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
 	    gd_lblSoNumber.widthHint = 100;
 	    lblSoNumber.setLayoutData(gd_lblSoNumber);
@@ -125,23 +115,26 @@ public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaLis
 		  GridData gd_lblNewLabel = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
 		  gd_lblNewLabel.widthHint = 100;
 		  lbSoNumberTo.setLayoutData(gd_lblNewLabel);
+		  //lbSoNumberTo.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		  lbSoNumberTo.setText("SO Number To   :");
 		  
 		  text_SoNumberTo =new Text(composite_selectedType, SWT.BORDER);
 		  GridData gd_text1 = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
 		  gd_text1.widthHint = 90;
 		  text_SoNumberTo.setLayoutData(gd_text1);
-		  text_SoNumberTo.setText("");
+		  text_SoNumberTo.setText("SO-");
 		 
 		  new Label(composite_selectedType, SWT.NONE);
 		  
 		  btnCheckButton = new Button(composite_selectedType, SWT.CHECK);
+		  //btnCheckButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		  btnCheckButton.setText("Date Selection(Released SO)");
 		  btnCheckButton.setSelection(dateChkBoxITtrue);
 		  new Label(composite_selectedType, SWT.NONE);
 		  new Label(composite_selectedType, SWT.NONE);
 		  
 		  composite_date = new Composite(composite_selectedType, SWT.BORDER);
+		 // composite_date.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		  GridLayout gl_composite_date = new GridLayout(3, false);
 		  gl_composite_date.marginTop = 5;
 		  gl_composite_date.verticalSpacing = 8;
@@ -155,6 +148,7 @@ public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaLis
 		  new Label(composite_selectedType, SWT.NONE);
 		  
 		  Label lblFromDate = new Label(composite_date, SWT.NONE);
+		  //lblFromDate.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		  GridData gd_lblFromDate = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		  gd_lblFromDate.widthHint = 70;
 		  lblFromDate.setLayoutData(gd_lblFromDate);
@@ -166,12 +160,13 @@ public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaLis
 		  dateTime_fromDate.setLayoutData(gd_dateTime_fromDate);
 	  
 		  
-		  dateTime_fromTime = new DateTime(composite_date,SWT.TIME | SWT.SHORT | SWT.BORDER);
+		 dateTime_fromTime = new DateTime(composite_date,SWT.TIME | SWT.SHORT | SWT.BORDER);
 		  GridData gd_dateTime_fromTime = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		  gd_dateTime_fromTime.widthHint = 72;
 		  dateTime_fromTime.setLayoutData(gd_dateTime_fromTime);
 		  	  
 		  Label lblToDate = new Label(composite_date, SWT.NONE);
+		  //lblToDate.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		  GridData gd_lblToDate = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		  gd_lblToDate.widthHint = 70;
 		  lblToDate.setLayoutData(gd_lblToDate);
@@ -190,6 +185,7 @@ public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaLis
 		
 	    
 	    Composite composite_ExportButton = new Composite(composite_main, SWT.NONE);
+	    //composite_ExportButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 	    GridLayout gl_composite_ExportButton = new GridLayout(2, false);
 	    gl_composite_ExportButton.horizontalSpacing = 10;
 	    composite_ExportButton.setLayout(gl_composite_ExportButton);
@@ -202,8 +198,10 @@ public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaLis
 	    gd_btnNext.widthHint = 60;
 	    btnNext.setLayoutData(gd_btnNext);
 	    btnNext.setText("Next");
-	  //  btnNext.setEnabled(false);
+	    btnNext.setEnabled(false);
 	
+	   
+	    
 	    btnCancel = new Button(composite_ExportButton, SWT.PUSH);
 	    GridData gd_btnCancel = new GridData(SWT.RIGHT, SWT.BOTTOM, true, true, 1, 1);
 	    gd_btnCancel.widthHint = 60;
@@ -214,6 +212,7 @@ public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaLis
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				shell_tdps_criteria.close();
+				
 			}
 			
 			@Override
@@ -223,10 +222,7 @@ public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaLis
 			}
 		});
 	    
-	    //Click handlers for UI fields
 	    getUIEvents();
-	    
-	    //Enable disable buttons
 	    setEnableFields(btnCheckButton.getSelection());
 	    //Used for TDPS_PRoertySelectUI's back button data set
 	    if(oldinputCriteriaList!=null && oldinputCriteriaList.size()>0)
@@ -237,13 +233,7 @@ public void fillCriteriaDialog(LinkedHashMap<String, String> oldinputCriteriaLis
 	    shell_tdps_criteria.open();
 	   
 	  }
-/****************************************************************
-Function Name	:   setEnableFields name
-Author			:	Bhavana Patil
-Description		:	Set enable/disable buttons
-Inputs			:	@param istrue 				
-Outputs			:	Display UI
-****************************************************************/
+
     void setEnableFields(boolean istrue)
     {
     	dateTime_fromDate.setEnabled(istrue);
@@ -252,48 +242,28 @@ Outputs			:	Display UI
     	dateTime_toTime.setEnabled(istrue);
     	
     }
-    
-/****************************************************************
-    Function Name	:   getUIEvents name
-    Author			:	Bhavana Patil
-    Description		:	Handlers for UI fields
-    Inputs			:	@param istrue 				
- ****************************************************************/    
-
 	private void getUIEvents() {
 		text_SoNumberFrom.addModifyListener(new ModifyListener(){
-		  		public void modifyText(ModifyEvent event) {
+		      public void modifyText(ModifyEvent event) {
 		          // Get the widget whose text was modified
-		  		
-		  			try {
-		  			  text_sofrom = (Text) event.widget;
-				         // System.out.println(text.getText());
-				          if((text_sofrom.getText()!=null && text_sofrom.getText().length()>0) || (text_soTo.getText()!=null && text_soTo.getText().length()>0) || btnCheckButton.getSelection())			 
-				        	  btnNext.setEnabled(true);
-				          else
-				        	  btnNext.setEnabled(false);
-						
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-		  		  }
+		          Text text = (Text) event.widget;
+		         // System.out.println(text.getText());
+		          if(text.getText()!=null && !text.getText().equals(""))
+		            btnNext.setEnabled(true);
+		         // else
+		        	//  btnNext.setEnabled(false);
+		        }
 		      });
 		
 		text_SoNumberTo.addModifyListener(new ModifyListener(){
 		      public void modifyText(ModifyEvent event) {
-		    	  
-		    	  try {
-		    		// Get the widget whose text was modified
-			           text_soTo = (Text) event.widget;
-			          //System.out.println(text.getText());
-			          if((text_soTo.getText()!=null &&  text_soTo.getText().length()>0)||(text_sofrom.getText()!=null && text_sofrom.getText().length()>0) || btnCheckButton.getSelection())//&& sofrom_Text.getText()!=null && sofrom_Text.getText().length()>0)
-			            btnNext.setEnabled(true);
-			          else
-			        	  btnNext.setEnabled(false);
-		    	  } catch (Exception e) {
-						e.printStackTrace();
-					}
-		          
+		          // Get the widget whose text was modified
+		          Text text = (Text) event.widget;
+		          //System.out.println(text.getText());
+		          if(text.getText()!=null && !text.getText().equals(""))
+		            btnNext.setEnabled(true);
+		         // else
+		        	//  btnNext.setEnabled(false);
 		        }
 		      });
 		
@@ -302,7 +272,7 @@ Outputs			:	Display UI
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				System.out.println("btnCheckButton.getSelection()"+btnCheckButton.getSelection());
-				if(btnCheckButton.getSelection() || (text_sofrom.getText()!=null && text_sofrom.getText().length()>0) || (text_soTo.getText()!=null && text_soTo.getText().length()>0))
+				if(btnCheckButton.getSelection())
 				{
 					setEnableFields(true);
 					btnNext.setEnabled(true);
@@ -355,36 +325,30 @@ Outputs			:	Display UI
 					Date dFrmDate=null;
 					Date dToDate=null;
 					try {
-						 //dFrmDate=new Date(from_date);
-						//dToDate=new Date(to_date);
-						dFrmDate=new SimpleDateFormat("dd-MMM-yyyy hh:mm").parse(from_date);  
-						dToDate=new SimpleDateFormat("dd-MMM-yyyy hh:mm").parse(to_date);
-						 
+						 dFrmDate=new Date(from_date);
+						 dToDate=new Date(to_date);
 						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					/* boolean chkNotMaxDataInLowDuration=false;
 					if(dateChkBoxITtrue)
-						chkNotMaxDataInLowDuration=getChkMaxDataInLowDuration(inputCriteriaList);*/
+						chkNotMaxDataInLowDuration=getChkMaxDataInLowDuration(inputCriteriaList);
 					
 					boolean isValidSORan = true;
-					
-					if(SoNumberFromStr.trim().equals("") && SoNumberToStr.trim().equals(""))
+					if(SoNumberFromStr.trim().equals("*") && SoNumberToStr.trim().equals("*"))
 						isValidSORan=false;
 					else if(SoNumberFromStr.trim().equalsIgnoreCase("SO-") && SoNumberToStr.trim().equalsIgnoreCase("SO-"))
 					   isValidSORan=false;
-					else if(SoNumberFromStr.trim().equals("*") && SoNumberToStr.trim().equals("*"))
-						   isValidSORan=false;
-					/*else if(SoNumberFromStr.trim().length()>0 && SoNumberToStr.trim().length()>0)
-					  isValidSORan=isValidSORange(SoNumberFromStr,SoNumberToStr);*/
-					
+					else if(SoNumberFromStr.trim().length()>0 && SoNumberToStr.trim().length()>0)
+					  isValidSORan=isValidSORange(SoNumberFromStr,SoNumberToStr);
+					*/
 					int result = SoNumberFromStr.compareTo(SoNumberToStr);
 					System.out.println("Result==     "+result);
 					
 					
-					if(!isValidSORan)
-					if(!isValidSORan || result== 1)
+				//	if(!isValidSORan)
+					if(result== 1)
 					{
 						org.eclipse.swt.widgets.MessageBox messageBox;
 				       	messageBox = new org.eclipse.swt.widgets.MessageBox(Display.getCurrent().getActiveShell(),SWT.ICON_INFORMATION| SWT.OK);
@@ -394,7 +358,6 @@ Outputs			:	Display UI
 				        int rc = messageBox.open();
 						
 					}
-					//commented by 13-01-20
 					else if(dateChkBoxITtrue && (!dFrmDate.before(dToDate) || dFrmDate.equals(dToDate)))
 					{						
 						org.eclipse.swt.widgets.MessageBox messageBox;
@@ -426,7 +389,7 @@ Outputs			:	Display UI
 						        }
 						    }
 						    	
-					}*///else
+					}*/else
 						new TDPS_PropertySelectUI(session,shell_tdps_criteria,inputCriteriaList).propertyDisplayDialog(tableStorage,dateChkBoxITtrue);
 					
 				}
@@ -440,13 +403,6 @@ Outputs			:	Display UI
 		
 	}
 	
-	/**********************************************************************************
-	Function Name	:   getChkMaxDataInLowDuration
-	Author			:	Bhavana Patil
-	Description		:   Next button Validation check minumum date range for max SO items 
-	Inputs			:	@param inputCrieria 				
-	Outputs			:	return true/false
-	****************************************************************/
 	private boolean getChkMaxDataInLowDuration(LinkedHashMap<String, String> inputCrieria) 
 	{
 		boolean ChkMaxDataInLowDuration=false;
@@ -494,16 +450,6 @@ Outputs			:	Display UI
 		
 		return ChkMaxDataInLowDuration;
 	}
-	
-	
-	/**********************************************************************************
-	Function Name	:   isValidSORange
-	Author			:	Bhavana Patil
-	Description		:   Check for input SO validations 
-	Inputs			:	@param SoFrom  @param SoTo
-	Outputs			:	return true/false
-	****************************************************************/
-
 	public static boolean isValidSORange( String SoFrom,String SoTo )
 	{
 		boolean chkRes;
@@ -546,14 +492,6 @@ Outputs			:	Display UI
 		  
 		return chkRes;
 	}
-	/**********************************************************************************
-	Function Name	:   getmonth
-	Author			:	Bhavana Patil
-	Description		:   get month in letters 
-	Inputs			:	@param month
-	Outputs			:	return string
-	****************************************************************/
-
 	static String getmonth(String month)
 	 {
 		 if(month.equals("1") || month.equals("01"))
@@ -586,13 +524,7 @@ Outputs			:	Display UI
 		return month;
 		 
 	 }
-	/**********************************************************************************
-	Function Name	:   getmonthInt
-	Author			:	Bhavana Patil
-	Description		:   get month in integer 
-	Inputs			:	@param month
-	Outputs			:	return integer
-	****************************************************************/
+	
 	static int getmonthInt(String month)
 	 {
 		int mn=1;
@@ -654,15 +586,6 @@ Outputs			:	Display UI
 	public void setDateTime_toTime(DateTime dateTime_toTime) {
 		this.dateTime_toTime = dateTime_toTime;
 	}
-	
-	/**********************************************************************************
-	Function Name	:   setOldData
-	Author			:	Bhavana Patil
-	Description		:   set old history of data on input fields in same session 
-	Inputs			:	@param inputCriteriaList
-	Outputs			:	return integer
-	****************************************************************/
-
 	public void setOldData(LinkedHashMap<String, String> inputCriteriaList) {
 		// TODO Auto-generated method stub
 		

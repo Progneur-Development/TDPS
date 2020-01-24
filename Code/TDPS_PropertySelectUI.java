@@ -56,6 +56,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 	boolean dateChkBoxITtrue;
 	private Table tableForSort;
 	private Label lblNewLabel;
+	static LinkedHashMap<String, Integer> colIdMap=null;
 	
 	
 	public TDPS_PropertySelectUI(TCSession session,Shell shlTdpsReportfillCriteria, LinkedHashMap<String, String> inputCriteriaList) 
@@ -634,7 +635,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					
-								
+					colIdMap=new LinkedHashMap<String, Integer>();
 					LinkedHashMap<String,LinkedHashMap<String,String>> ColNameList=new LinkedHashMap<String,LinkedHashMap<String,String>>();
 					TableItem[] items=table_prop_right.getItems();
 					for(int i=0;i<items.length;i++)
@@ -646,6 +647,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 						data.put("OBJECT_DATA_TYPE",(String) items[i].getData("OBJECT_DATA_TYPE"));
 						
 						ColNameList.put((String) items[i].getData("PROP_REAL_NAME")+"_"+i,data);
+						colIdMap.put( (String) items[i].getData("PROP_REAL_NAME"),i);
 					}
 					System.out.println("ColNameList=="+ColNameList);
 					//for old data storage
@@ -654,7 +656,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 					tableStorage.add(getTableData(table_prop_right));
 						
 					obj.writeSOAInputTextFile(ColNameList);
-					new TDPSDisplayReportUI(session,shell_TDPS_prop,ColNameList,inputCriteriaList,tableStorage,dateChkBoxITtrue).getTDPS_ReportUI();
+					new TDPSDisplayReportUI(session,shell_TDPS_prop,ColNameList,inputCriteriaList,tableStorage,dateChkBoxITtrue).getTDPS_ReportUI(colIdMap);
 					
 					
 					

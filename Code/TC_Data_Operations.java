@@ -603,6 +603,9 @@ public class TC_Data_Operations {
 					
 				}
 			}
+			//This line is added to store release date column for data fetching while soa call \\bhavana 16-1-2020
+			String date_datecol="TDPSSOItemRevision=date_released=date=date";
+			writer.println(date_datecol);
 			
 			writer.close();
 				
@@ -810,6 +813,13 @@ public class TC_Data_Operations {
 		list12.put("PROP_REAL_NAME","tdps_dispatch_date");	
 		list12.put("OBJECT_DATA_TYPE","date");
 		hashList.put("TDPSMachineRevisionMaster"+(i++), list12);
+		
+		/*LinkedHashMap<String, String> list13= new LinkedHashMap<String, String>();
+		list13.put("PROP_DISPLAY_NAME","Date Released");
+		list13.put("BUSINESS_OBJ_NAME","TDPSSORevision");
+		list13.put("PROP_REAL_NAME","date_released");	
+		list13.put("OBJECT_DATA_TYPE","date");
+		hashList.put("TDPSSORevision"+(i++), list13);*/
 		return hashList;
 	 }
 }

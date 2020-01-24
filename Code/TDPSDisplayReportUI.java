@@ -7,15 +7,21 @@ Functionality : Report will be generated using given input criteria on SWT table
 Author : Bhavana Patil and Priyanka Tikhe
 ******************************************************************/
 package com.teamcenter.tdps.view;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -33,6 +39,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.SWTResourceManager;
+
 import com.tdp2.services.loose.oaledgerlib.GetSONumbersDataService;
 import com.tdp2.services.loose.oaledgerlib._2015_07.GetSONumbersData;
 import com.tdp2.services.loose.oaledgerlib._2015_07.GetSONumbersData.GetPropertyResponse;
@@ -59,7 +66,11 @@ public class TDPSDisplayReportUI {
 	private Label lbprogress_status;
 	private Label lbdataLoadTime;
 	public static boolean dataAvlflag=false;
-	LinkedHashMap<String,String> columnNamesHashmap; 
+	LinkedHashMap<String,String> columnNamesHashmap;
+	private LinkedHashMap<String,LinkedHashMap<String, String>> tablecoldatalist;
+	LinkedHashMap<String, Integer> tableColumnID=new LinkedHashMap<String, Integer>();
+	
+	static String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=TDPSPLMDB;user=infodba;password=infodba";
 	
 public TDPSDisplayReportUI(TCSession session, Shell shell_TDPS_FillCriteria,LinkedHashMap<String,LinkedHashMap<String,String>> ColNameList,LinkedHashMap<String, String> inputCriteriaList, ArrayList<Object> tableStorage, boolean dateChkBoxITtrue)
 {
@@ -74,10 +85,14 @@ public TDPSDisplayReportUI(TCSession session, Shell shell_TDPS_FillCriteria,Link
 }
 	
 /**
+ * @param colIdMap 
  * @wbp.parser.entryPoint
  */
-public void getTDPS_ReportUI()
+public void getTDPS_ReportUI(LinkedHashMap<String, Integer> colIdMap)
 {
+	if(colIdMap.size()>0)
+		tableColumnID=colIdMap;
+	
 	if(DisplayReportshell!=null)
 		DisplayReportshell.dispose();
 	DisplayReportshell = new Shell();
@@ -175,7 +190,7 @@ public void getTDPS_ReportUI()
 	
 	DisplayReportshell.open();
 	
-	//Assign data to table
+	//Assign selected input criteria data to table
 	try {
 		dataAvlflag=false;
 		 lbprogress_status.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
@@ -184,6 +199,7 @@ public void getTDPS_ReportUI()
 		 StopWatch sw = new StopWatch();
 		 sw.start();
 		 
+		 //Display data on table
 		 tdps_displayTableData();
 		 
 		 sw.stop();
@@ -302,6 +318,7 @@ void tps_displayColumnData()
 			reporttable_col = new TableColumn(report_table, SWT.NONE);
 		    reporttable_col.setWidth(100);
 		    reporttable_col.setText(uniqueDisplayNameList.get(i));//Get Display name
+		    reporttable_col.setData("COL_ID",uniqueRealNameList.get(i));
 		    
 		    String dType=OBJECT_DATA_TYPEList.get(uniqueDisplayNameList.get(i));
 		  //  System.out.println("dType=="+dType);
@@ -398,13 +415,288 @@ private void tdps_displayTableData() {
 	
 			//SOA call : To execute query with provided SO input criteria.
 		// Fetch SO objects and  traverse SO data on give response to RAC
-		callSOA(soNumberFromStr,soNumberToStr,from_date,to_date,dateChkBoxITtrue);
+		//callSOA(soNumberFromStr,soNumberToStr,from_date,to_date,dateChkBoxITtrue);
+		pupulatedDBdata(soNumberFromStr,soNumberToStr,from_date,to_date,dateChkBoxITtrue);
 	}catch(Exception e)
 	{
 		e.printStackTrace();
 	}
 }
 
+public void pupulatedDBdata(String soNumberFromStr, String soNumberToStr,String from_date, String to_date, boolean dateChkBoxITtrue2) 
+{
+	   boolean soFrom_chkFlag=false;
+	   boolean soTo_chkFlag=false;
+	
+		try 
+		{
+			if(dateChkBoxITtrue2 && from_date.length()>0 && to_date.length()>0)
+			{
+				from_date=from_date.split(" ")[0];
+				to_date=to_date.split(" ")[0];
+			}
+			if(soNumberFromStr!=null && soNumberFromStr.length()>0)
+			{
+					soFrom_chkFlag=true;
+			}else
+			{
+				soNumberFromStr="";
+				soFrom_chkFlag=false;
+			}
+			if(soNumberToStr!=null && soNumberToStr.length()>0)
+			{
+				soTo_chkFlag=true;
+			}
+			else
+			{
+				soNumberToStr="";
+				soTo_chkFlag=false;
+			}
+			
+			String query="" ;
+			//String displayQuery="Select SO_Numbers,FERT,tdps_frame,tdps_mva,tdps_mw,tdps_voltage,tdps_no_of_poles,tdps_frequency,tdps_pf,tdps_end_user,tdps_customer_name,tdps_country_installation,tdps_dispatch_date,tdps_dispatch_date FROM dbo.SO_ITEM_DETAILS ";
+			String displayQuery="Select * FROM dbo.SO_ITEM_DETAILS ";
+			
+			if(dateChkBoxITtrue2 && soFrom_chkFlag && soTo_chkFlag) //SO from && SO To && fromDate && toDate
+			{
+				query = displayQuery+"WHERE (SO_Numbers BETWEEN '"+soNumberFromStr+"' AND '"+soNumberToStr+"') and (date_released BETWEEN '"+from_date+"' AND '"+to_date+"');";
+			}else if(dateChkBoxITtrue2 && !soFrom_chkFlag && !soTo_chkFlag)
+			{
+				query = displayQuery+"WHERE (date_released BETWEEN '"+from_date+"' AND '"+to_date+"');";	
+			}
+			else if((dateChkBoxITtrue2 && soFrom_chkFlag && !soTo_chkFlag) || (dateChkBoxITtrue2 && !soFrom_chkFlag && soTo_chkFlag))//(fromDate && toDate && SO from) || (fromDate && toDate && SO To)
+			{
+				String soNo=dataValidation(soFrom_chkFlag,soTo_chkFlag,soNumberFromStr,soNumberToStr);
+				
+				query = displayQuery+"WHERE (SO_Numbers Like '"+soNo+"') and (date_released BETWEEN '"+from_date+"' AND '"+to_date+"');";	
+			}
+			else if(!dateChkBoxITtrue2 && soFrom_chkFlag && soTo_chkFlag) //SO from && SO To
+			{
+				query = displayQuery+"WHERE (SO_Numbers BETWEEN '"+soNumberFromStr+"' AND '"+soNumberToStr+"');";
+			}else if(!dateChkBoxITtrue2 && (soFrom_chkFlag && !soTo_chkFlag) || (!soFrom_chkFlag && soTo_chkFlag))//SO from || SO TO
+			{
+				
+				String soNo=dataValidation(soFrom_chkFlag,soTo_chkFlag,soNumberFromStr,soNumberToStr);
+				query = displayQuery+"WHERE SO_Numbers Like '"+soNo+"';";
+				
+			}
+			
+			System.out.println("query==="+query);
+			
+			try
+			{
+				Class.forName("com.mysql.jdbc.Driver");  
+				Connection conn=DriverManager.getConnection(connectionUrl);
+				Statement	stmt = conn.createStatement();
+				
+				 System.out.println("populate DB table data...");
+				 ResultSet rs = stmt.executeQuery(query);
+				 
+				    tablecoldatalist = new LinkedHashMap<String,LinkedHashMap<String, String>>();
+				    
+				     int Rowcnt=0;
+				  
+				     while(rs.next())
+				     {
+				    	   TableItem items = new TableItem(report_table, SWT.NONE);
+				    	 //for(int colId=0;colId<tableColumnID.size();colId++)
+				    	 for(String key:tableColumnID.keySet())
+				    	 {
+				    		 int columnId=tableColumnID.get(key);
+				    		 if(key.equals("SO Numbers"))
+				    		 {
+				    			 items.setText(columnId,rs.getString("SO_Numbers"));
+				    		 }
+				    		 else
+				    		 {
+				    			 items.setText(columnId,rs.getString(key));
+				    		 }
+				    		 
+				    	 }
+				    	 Rowcnt++;
+				    	
+				     }
+				 System.out.println("Total row count=="+Rowcnt);
+						
+				     if(stmt!=null)
+				    	 stmt.close();
+				     
+				     if(conn!=null)
+				         conn.close();
+				     
+				if(Rowcnt==0)
+					dataAvlflag=false;
+				else
+					dataAvlflag=true;
+				
+			}catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	
+}
+
+String  dataValidation(boolean soFrom_chkFlag, boolean soTo_chkFlag, String soNumberFromStr, String soNumberToStr)
+{
+	String soNo="";
+	if(soFrom_chkFlag)
+	{
+		if(soNumberFromStr.contains("*"))
+			soNumberFromStr = soNumberFromStr.replace('*', '%');
+		else
+			soNumberFromStr=soNumberFromStr+"%";
+		soNo=soNumberFromStr;
+	}
+	else if(soTo_chkFlag)
+	{
+		if(soNumberToStr.contains("*"))
+			soNumberToStr = soNumberToStr.replace('*', '%');
+		else
+			soNumberToStr=soNumberToStr+"%";
+		soNo=soNumberToStr;
+	}
+	else
+		soNo="%";
+	return soNo;
+}
+
+/*public void pupulatedDBdata_original(String soNumberFromStr, String soNumberToStr,
+		String from_date, String to_date, boolean dateChkBoxITtrue2) 
+{
+	
+	try
+	{
+		try 
+		{
+			if(soNumberFromStr!=null && soNumberFromStr.length()>0)
+			{
+				if(soNumberFromStr.contains("*"))
+					soNumberFromStr = soNumberFromStr.replace('*', '%');
+			}
+			if(soNumberToStr!=null && soNumberToStr.length()>0)
+			{
+				if(soNumberToStr.contains("*"))
+					soNumberToStr = soNumberToStr.replace('*', '%');
+				
+			}
+			
+			 
+			Class.forName("com.mysql.jdbc.Driver");  
+			//Class.forName("com.mysql.jdbc.Driver");  
+			Connection conn=DriverManager.getConnection(connectionUrl);
+			Statement	stmt = conn.createStatement();
+			
+			//Delete table vlues
+			 System.out.println("populate DB table data...");
+		     //String query = "select * from  dbo.SO_ITEM_DETAILS;";
+			 
+			 // so input
+		   //  String query = "Select * FROM dbo.SO_ITEM_DETAILS WHERE SO_Numbers BETWEEN '"+soNumberFromStr+"' AND '"+soNumberToStr+"';";
+			//String query = "Select * FROM dbo.SO_ITEM_DETAILS WHERE date_released BETWEEN '"+from_date+"' AND '"+to_date+"';";
+			 
+			 //PRiyanka changes
+			 String query ="";
+			 if (SONumfromstr.length()>0 && SONumTOstr.length()< 0 && dateChkBoxITtrue2 && from_date.length()>0 && to_date.length()>0 )
+				 query = "Select * FROM dbo.SO_ITEM_DETAILS WHERE date_released BETWEEN '"+from_date+"' AND '"+to_date+"';";
+			 else if(SONumfromstr.length()>0 && SONumTOstr.length()>0)
+				 query = "Select * FROM dbo.SO_ITEM_DETAILS WHERE SO_Numbers BETWEEN '"+SONumfromstr+"' AND '"+SONumTOstr+"';";
+		else if (from_date.length()>0 && to_date.length()>0)
+				 query = "Select * FROM dbo.SO_ITEM_DETAILS WHERE date_released BETWEEN '"+from_date+"' AND '"+to_date+"';";
+			else if (SONumfromstr.length()>0 && SONumTOstr.length()>0 && dateChkBoxITtrue2 && from_date.length()>0 && to_date.length()>0)
+				query = "Select * FROM dbo.SO_ITEM_DETAILS WHERE SO_Numbers BETWEEN '"+soNumberFromStr+"' AND '"+soNumberToStr+"' and date_released BETWEEN '"+from_date+"' AND '"+to_date+"';";
+
+				else if(SONumfromstr.length()>0 && SONumTOstr.length()>0 && dateChkBoxITtrue2 && from_date.length()>0 && to_date.length()>0)
+				 query = "Select * FROM dbo.SO_ITEM_DETAILS WHERE SO_Numbers BETWEEN '"+soNumberFromStr+"' AND '"+soNumberToStr+"' and date_released BETWEEN '"+from_date+"' AND '"+to_date+"';";
+			 else if(SONumfromstr.length()>0 && SONumTOstr.length()>SONumfromstr.length())
+				 query = "Select * FROM dbo.SO_ITEM_DETAILS WHERE SO_Numbers BETWEEN '"+soNumberFromStr+"' AND '"+soNumberToStr+"' and date_released BETWEEN '"+from_date+"' AND '"+to_date+"';";
+			 else if(soNumberFromStr.contains("|soNumberFromStr%|"))
+				 query = "Select * FROM dbo.SO_ITEM_DETAILS WHERE SO_Numbers BETWEEN '"+soNumberFromStr+"' AND '"+soNumberToStr+"' ;";
+			// else if(soNumberFromStr.
+						 if(dateChkBoxITtrue2 == true)
+		     {
+				 query = "Select * FROM dbo.SO_ITEM_DETAILS WHERE date_released BETWEEN '"+from_date+"' AND '"+to_date+"';";
+
+		     }else
+		     {
+		    	
+		     }
+			 ResultSet rs = stmt.executeQuery(query);
+		    tablecoldatalist = new LinkedHashMap<String,LinkedHashMap<String, String>>();
+		
+		     int cnt=0;   
+		     while(rs.next())
+		     {
+		    	 LinkedHashMap<String, String> innerList=new LinkedHashMap<String, String>();
+		    	 
+		    	 innerList.put("SO Numbers",rs.getString(1));
+		    	 innerList.put("FERT",rs.getString(2));
+		    	 innerList.put("tdps_frame",rs.getString(3));
+		    	 innerList.put("tdps_mva",rs.getString(4));
+		    	 innerList.put("tdps_mw",rs.getString(5));
+		    	 innerList.put("tdps_voltage",rs.getString(6));
+		    	 innerList.put("tdps_no_of_poles",rs.getString(7));
+		    	 innerList.put("tdps_frequency",rs.getString(8));
+		    	 innerList.put("tdps_pf",rs.getString(9));
+		    	 innerList.put("tdps_end_user",rs.getString(10));
+		    	 innerList.put("tdps_customer_name",rs.getString(11));
+		    	 innerList.put("tdps_country_installation",rs.getString(12));
+		    	 innerList.put("tdps_dispatch_date",rs.getString(13));
+		    	 innerList.put("date_released",rs.getString(14));
+		    	 
+						System.out.println(rs.getString(1)+"  "+rs.getString(2)+"  "+rs.getString(3)+" "+rs.getDouble(4)+" "+rs.getDouble(5)+" "+rs.getDouble(6)+" "+rs.getInt(7)
+								+" "+rs.getInt(8)+" "+rs.getDouble(9)+""+rs.getString(10)+""+rs.getString(11)+""+rs.getString(12)+""+rs.getString(13));  
+				  
+		   
+				tablecoldatalist.put(""+cnt, innerList);
+				cnt++;
+				  System.out.println("tablecoldatalist====="+tablecoldatalist);
+		     }
+		     if(tablecoldatalist!=null && tablecoldatalist.size()>0)
+		     {
+		    	  for(String rowKey:tablecoldatalist.keySet())
+				    {
+				    	 LinkedHashMap<String, String> rowdata = tablecoldatalist.get(rowKey);
+				    	 TableItem items = new TableItem(report_table, SWT.NONE);
+				    	 for(String key:rowdata.keySet())
+				    	 {
+				    		 TableColumn[] columns = report_table.getColumns();
+				    		 for(int j=0;j<report_table.getColumnCount();j++)
+						    	{
+						    		if(key.equals(columns[j].getData("COL_ID")))
+						    		{
+						    			items.setText(j,rowdata.get(key));
+						    			break;
+						    		}
+						    	}	 
+				    	 }
+				    	
+				    }
+		     }
+		   
+				
+		     if(stmt!=null)
+		    	 stmt.close();
+		     
+		     if(conn!=null)
+		         conn.close();
+		     
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}catch(Exception e)
+	{
+		e.printStackTrace();
+	}
+	
+}
+*/
 void getEvents()
 {
   btnExit.addSelectionListener(new SelectionListener() {
@@ -585,7 +877,7 @@ void callSOA(String soNumberFromStr, String soNumberToStr,String from_date, Stri
     				
     				if(!entry.getValue().equals(""))
     				{
-    					String sodata=entry.getValue();
+    					String sodata=entry.getValue();//|^|
     						
     					String data[]=sodata.split("\\|\\^\\|");
     					
@@ -597,7 +889,7 @@ void callSOA(String soNumberFromStr, String soNumberToStr,String from_date, Stri
     						for(int i=0;i<data.length;i++)
     						{
     							//System.out.println("data[i] ="+data[i]);
-    							if(data[i].contains("|*|"))
+    							if(data[i].contains("|*|"))//|*|
     							{
     								String relname = data[i].split("\\|\\*\\|")[0];
     								String coloLocationStr = columnNamesHashmap.get(relname).split("=")[0];
