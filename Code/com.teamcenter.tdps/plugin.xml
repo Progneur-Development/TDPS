@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Sample Category"
+            id="com.teamcenter.tdps.commands.category">
+      </category>
+      <command
+            name="OA ledger"
+            categoryId="com.teamcenter.tdps.commands.category"
+            id="com.teamcenter.tdps.commands.sampleCommand">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="com.teamcenter.tdps.commands.sampleCommand"
+            class="com.teamcenter.tdps.handlers.QA_ledgerHandler">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.teamcenter.tdps.commands.sampleCommand"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               label="Reports"
+               mnemonic="M"
+               id="com.teamcenter.tdps.menus.sampleMenu">
+            <command
+                  commandId="com.teamcenter.tdps.commands.sampleCommand"
+                  mnemonic="S"
+                  id="com.teamcenter.tdps.menus.sampleCommand">
+            </command>
+         </menu>
+      </menuContribution>
+     <!-- <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="com.teamcenter.tdps.toolbars.sampleToolbar">
+            <command
+                  commandId="com.teamcenter.tdps.commands.sampleCommand"
+                  icon="icons/sample.gif"
+                  tooltip="Say hello world"
+                  id="com.teamcenter.tdps.toolbars.sampleCommand">
+            </command>
+         </toolbar>
+      </menuContribution> -->
+   </extension>
+
+</plugin>
